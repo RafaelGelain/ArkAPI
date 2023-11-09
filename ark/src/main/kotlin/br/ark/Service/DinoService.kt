@@ -17,14 +17,16 @@ class DinoService (private val repository: DinoRepository, private val converter
     }
     fun buscarPorId(id: Long): DinoResponseDTO {
         val mob = repository.findAll().firstOrNull { it.id == id }
-            ?: throw NotFoundException( "Não encontrado!" )
+            ?: throw NotFoundException( "Não encontrado !!" )
         return converter.toEventoResponseDTO(mob)
     }
     // NÃO ALTERADO O ATUALIZAR // DANDO ERRO
 
     fun atualizar(id: Long, dto: DinoDTO): DinoResponseDTO {
-        val dinoATT = repository.update(id, converter.toDino(dto))
-        return converter.toEventoResponseDTO(dinoATT)
+        val mob = repository.findAll().firstOrNull { it.id == id }
+            ?: throw NotFoundException( "Não encontrado !!" )
+        val mobAtualizado = repository.update(mob , converter.toDino(dto))
+        return converter.toEventoResponseDTO(mobAtualizado)
     }
     fun deletar(id: Long) {
         repository.deletar(id)

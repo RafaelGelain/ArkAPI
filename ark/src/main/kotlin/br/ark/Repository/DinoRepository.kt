@@ -11,18 +11,18 @@ import org.springframework.stereotype.Repository
 class DinoRepository(private var mobs: MutableList<Mob>) {
     private var idCont = 4L
 
-    fun update(mob: Long, DinoAtualizado: Mob) :Mob {
+    fun update(mob: Mob, mobAtualizado: Mob): Mob {
         mobs.remove(mob)
-        val dinoAtualizadoComId = Mob(
-                id = id,
-                imagem = DinoAtualizado.imagem,
-                nome = DinoAtualizado.nome,
-                comportamento = DinoAtualizado.comportamento,
-                tipo = DinoAtualizado.tipo,
-                comida = DinoAtualizado.comida
+        val mobAtualizadoComId = Mob(
+            id = mob.id,
+            imagem = mobAtualizado.imagem,
+            nome = mobAtualizado.nome,
+            comportamento = mobAtualizado.comportamento,
+            tipo = mobAtualizado.tipo,
+            comida = mobAtualizado.comida
         )
-        mobs.add(dinoAtualizadoComId)
-        return dinoAtualizadoComId
+        mobs.add(mobAtualizadoComId)
+        return mobAtualizadoComId
     }
 
     fun deletar(id: Long) {
