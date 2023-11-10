@@ -8,7 +8,7 @@ import br.ark.Model.Mob
 import br.ark.Repository.DinoRepository
 import br.ark.converters.DinoConverter
 import org.springframework.stereotype.Service
-
+private const val DINO_NOT_FOUND_MESSAGE = "Dinossauro não encontrado!"
 @Service
 class DinoService (private val repository: DinoRepository, private val converter: DinoConverter) {
     fun listar(): List<DinoResponseDTO>{
@@ -16,24 +16,30 @@ class DinoService (private val repository: DinoRepository, private val converter
             .map(converter::toEventoResponseDTO)
     }
     fun buscarPorId(id: Long): DinoResponseDTO {
-        val mob = repository.findAll().firstOrNull { it.id == id }
-            ?: throw NotFoundException( "Não encontrado !!" )
+        val mob = repository.findById(id)
+            .orElseThrow { NotFoundException(DINO_NOT_FOUND_MESSAGE) }
         return converter.toEventoResponseDTO(mob)
     }
-    // NÃO ALTERADO O ATUALIZAR // DANDO ERRO
 
     fun atualizar(id: Long, dto: DinoDTO): DinoResponseDTO {
-        val mob = repository.findAll().firstOrNull { it.id == id }
-            ?: throw NotFoundException( "Não encontrado !!" )
-        val mobAtualizado = repository.update(mob , converter.toDino(dto))
-        return converter.toEventoResponseDTO(mobAtualizado)
+        val mob = repository.findById(id)
+            .orElseThrow { NotFoundException(DINO_NOT_FOUND_MESSAGE) }
+            .copy(
+                nome = dto.nome,
+                imagem  = dto.imagem,
+                comportamento  = dto.comportamento,
+                tipo  = dto.tipo,
+                comida  = dto.comida
+            )
+        return converter.toEventoResponseDTO(repository.save(mob))
     }
     fun deletar(id: Long) {
-        repository.deletar(id)
+        repository.deleteById(id)
     }
     fun cadastrar(dto: DinoDTO): DinoResponseDTO {
-        val Mob = repository.cadastrar(converter.toDino(dto))
-        return converter.toEventoResponseDTO(Mob)
+        return converter.toEventoResponseDTO(
+            repository.save(converter.toDino(dto)))
     }
+
 
 }
