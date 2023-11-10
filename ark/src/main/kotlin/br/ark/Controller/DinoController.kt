@@ -4,7 +4,9 @@ import br.ark.DTOS.DinoDTO
 import br.ark.DTOS.DinoResponseDTO
 import br.ark.Model.Mob
 import br.ark.Service.DinoService
+import jakarta.transaction.Transactional
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -14,9 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.util.UriComponentsBuilder
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 
 @RestController
 @RequestMapping("/dinossauro")
@@ -24,8 +29,10 @@ import org.springframework.web.util.UriComponentsBuilder
 class DinoController(val service: DinoService) {
 
     @GetMapping
-    fun listar(): List<DinoResponseDTO> {
-        return service.listar()
+    fun listar(
+        @RequestParam(required = false) nomeDino: String?,
+        @PageableDefault(size = 10) paginacao: Pageable): Page<DinoResponseDTO> {
+        return service.listar(nomeDino, paginacao)
     }
 
     @GetMapping("/{id}")
@@ -34,6 +41,7 @@ class DinoController(val service: DinoService) {
     }
 
     @PostMapping
+    @Transactional
     fun cadastra(@RequestBody @Valid dto: DinoDTO,
                  uriBuilder: UriComponentsBuilder
     ): ResponseEntity<DinoResponseDTO> {
@@ -44,6 +52,7 @@ class DinoController(val service: DinoService) {
     }
 
     @PutMapping("/{id}")
+    @Transactional
     fun atualizar(@PathVariable id: Long, @RequestBody @Valid dto: DinoDTO): DinoResponseDTO {
         return service.atualizar(id, dto)
     }
