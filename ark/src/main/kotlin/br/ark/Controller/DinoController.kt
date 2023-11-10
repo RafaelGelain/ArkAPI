@@ -53,6 +53,4 @@ class DinoController(val service: DinoService) {
     fun deletar(@PathVariable id: Long) {
         service.deletar(id)
     }
-
-
-} //pagina 50
+}
