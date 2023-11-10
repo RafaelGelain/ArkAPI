@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 private const val DINO_NOT_FOUND_MESSAGE = "Dinossauro não encontrado!"
 @Service
 class DinoService (private val repository: DinoRepository, private val converter: DinoConverter) {
-    fun listar(): List<DinoResponseDTO>{
+    fun listar(): List<DinoResponseDTO>{teste
         return repository.findAll()
             .map(converter::toEventoResponseDTO)
     }
